@@ -39,7 +39,7 @@ This guide helps you diagnose and fix common issues with the Reddit MCP Server.
 3. **Run with debug logging:**
    ```bash
    export REDDIT_LOG_LEVEL=DEBUG
-   python reddit_mcp_server_improved.py
+   python reddit_mcp_server.py
    ```
 
 4. **Check for port conflicts:**
@@ -128,7 +128,7 @@ pip install -r requirements.txt
      "mcpServers": {
        "reddit": {
          "command": "/full/path/to/python",
-         "args": ["/full/path/to/reddit_mcp_server_improved.py"]
+         "args": ["/full/path/to/reddit_mcp_server.py"]
        }
      }
    }
@@ -136,7 +136,7 @@ pip install -r requirements.txt
 
 3. **Test with stdio directly:**
    ```bash
-   echo '{"jsonrpc":"2.0","method":"tools/list","id":1}' | python reddit_mcp_server_improved.py
+   echo '{"jsonrpc":"2.0","method":"tools/list","id":1}' | python reddit_mcp_server.py
    ```
 
 ### Timeout Errors
@@ -338,7 +338,7 @@ pip install -r requirements.txt
 
 ```bash
 export REDDIT_LOG_LEVEL=DEBUG
-python reddit_mcp_server_improved.py 2> debug.log
+python reddit_mcp_server.py 2> debug.log
 ```
 
 ### Test Individual Components
@@ -397,10 +397,10 @@ curl -v "https://www.reddit.com/r/python.json" 2>&1 | grep -E "< x-rate|< retry"
 **Test MCP communication:**
 ```bash
 # List tools
-echo '{"jsonrpc":"2.0","method":"tools/list","id":1}' | python reddit_mcp_server_improved.py | jq .
+echo '{"jsonrpc":"2.0","method":"tools/list","id":1}' | python reddit_mcp_server.py | jq .
 
 # Call tool
-echo '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"get_subreddit_feed","arguments":{"subreddit":"python","limit":1}},"id":2}' | python reddit_mcp_server_improved.py
+echo '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"get_subreddit_feed","arguments":{"subreddit":"python","limit":1}},"id":2}' | python reddit_mcp_server.py
 ```
 
 ## FAQ

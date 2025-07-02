@@ -15,7 +15,7 @@ Before installing the Reddit MCP Server, ensure you have:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/reddit-mcp.git
+git clone https://github.com/zicochaos/reddit-mcp.git
 cd reddit-mcp
 ```
 
@@ -47,20 +47,18 @@ python -c "import mcp, httpx; print('Dependencies installed successfully!')"
 
 ## Quick Start
 
-### Running the Basic Server
+### Running the Server
 
-To run the original basic server:
+To run the Reddit MCP server:
 
 ```bash
 python reddit_mcp_server.py
 ```
 
-### Running the Enhanced Server
-
-To run the enhanced server with all improvements:
+Or with uv (no virtual environment needed):
 
 ```bash
-python reddit_mcp_server_improved.py
+uv run --no-project --with mcp>=0.1.0 --with httpx>=0.25.0 --with typing-extensions>=4.8.0 reddit_mcp_server.py
 ```
 
 ## Configuration
@@ -92,7 +90,7 @@ export REDDIT_MAX_ITEMS=100          # Max items per request
 export REDDIT_DEFAULT_LIMIT=25       # Default items limit
 
 # Custom User Agent (optional)
-export REDDIT_USER_AGENT="YourApp/1.0 (by /u/yourusername)"
+export REDDIT_USER_AGENT="YourApp/1.0"
 ```
 
 ### Using a .env File
@@ -187,7 +185,7 @@ import json
 
 # Start the server
 process = subprocess.Popen(
-    ["python", "reddit_mcp_server_improved.py"],
+    ["python", "reddit_mcp_server.py"],
     stdin=subprocess.PIPE,
     stdout=subprocess.PIPE,
     stderr=subprocess.PIPE,
@@ -213,8 +211,7 @@ process.stdin.flush()
 
 ```
 reddit-mcp/
-├── reddit_mcp_server.py         # Original basic server
-├── reddit_mcp_server_improved.py # Enhanced server with all features
+├── reddit_mcp_server.py         # Main MCP server implementation
 ├── models.py                    # Data models and types
 ├── config.py                    # Configuration management
 ├── client.py                    # HTTP client wrapper
@@ -230,6 +227,8 @@ reddit-mcp/
     ├── USAGE_EXAMPLES.md
     ├── CONFIGURATION.md
     ├── TROUBLESHOOTING.md
+    ├── LLM_USAGE_GUIDE.md
+    ├── RESPONSE_EXAMPLES.md
     └── CONTRIBUTING.md
 ```
 
@@ -240,7 +239,7 @@ reddit-mcp/
 ```python
 # test_reddit_mcp.py
 import asyncio
-from reddit_mcp_server_improved import get_subreddit_feed
+from reddit_mcp_server import get_subreddit_feed
 
 async def test():
     result = await get_subreddit_feed("python", limit=5)
@@ -264,7 +263,7 @@ Use the MCP test client to verify the server is responding correctly:
 pip install mcp-cli
 
 # Test the server
-mcp-cli test reddit_mcp_server_improved.py
+mcp-cli test reddit_mcp_server.py
 ```
 
 ## Performance Optimization

@@ -476,7 +476,7 @@ async def multi_search(query, subreddits):
 
 ```python
 import discord
-from reddit_mcp_server_improved import get_subreddit_feed
+from reddit_mcp_server import get_subreddit_feed
 
 client = discord.Client()
 
@@ -510,7 +510,7 @@ async def on_message(message):
 
 ```python
 from fastapi import FastAPI
-from reddit_mcp_server_improved import get_subreddit_feed, search_reddit
+from reddit_mcp_server import get_subreddit_feed, search_reddit
 
 app = FastAPI()
 
