@@ -137,5 +137,5 @@ Thumbs.db
 config.json
 *.log
 test_*.py
-!tests/
-!tests/**/*.py
+.claude/
+.serena/
