@@ -19,6 +19,12 @@ All notable changes to the Reddit MCP Server project will be documented in this 
 - Updated `get_subreddit_feed` to accept optional subreddit parameter
 - Improved `get_post_comments` response structure with detailed post information
 
+### Documentation
+- Added comprehensive LLM Usage Guide with prompt templates and examples
+- Created Response Examples documentation showing actual tool outputs
+- Included troubleshooting section for LLM integration
+- Added best practices for efficient API usage
+
 ## [1.1.0] - 2025-07-02
 
 ### Fixed

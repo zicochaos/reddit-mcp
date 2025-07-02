@@ -114,6 +114,10 @@ uv run --no-project --with mcp>=0.1.0 --with httpx>=0.25.0 --with typing-extensi
 
 For Claude Desktop integration, see the [Setup Guide](docs/SETUP_GUIDE.md) for configuration examples.
 
+For LLM usage examples and best practices, see:
+- [LLM Usage Guide](docs/LLM_USAGE_GUIDE.md) - Prompts, examples, and integration tips
+- [Response Examples](docs/RESPONSE_EXAMPLES.md) - Actual response formats from each tool
+
 ### Available Tools
 
 #### 1. get_subreddit_feed
