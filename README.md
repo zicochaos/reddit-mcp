@@ -297,3 +297,9 @@ The project includes comprehensive tests with >70% coverage:
 ## License
 
 MIT License - see LICENSE file for details
+
+## Repository
+
+- GitHub: [https://github.com/YOUR_USERNAME/reddit-mcp](https://github.com/YOUR_USERNAME/reddit-mcp)
+- Issues: [https://github.com/YOUR_USERNAME/reddit-mcp/issues](https://github.com/YOUR_USERNAME/reddit-mcp/issues)
+- Pull Requests: [https://github.com/YOUR_USERNAME/reddit-mcp/pulls](https://github.com/YOUR_USERNAME/reddit-mcp/pulls)
