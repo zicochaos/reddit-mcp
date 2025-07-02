@@ -1,0 +1,20 @@
+# Reddit MCP Server Dependencies
+
+# MCP SDK
+mcp>=0.1.0
+
+# HTTP client with async support
+httpx>=0.25.0
+
+# Type hints and validation
+typing-extensions>=4.8.0
+
+# Async utilities
+asyncio>=3.4.3
+
+# Development dependencies (optional)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+mypy>=1.5.0
+ruff>=0.1.0

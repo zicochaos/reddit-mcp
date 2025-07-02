@@ -1,0 +1,31 @@
+# Development dependencies for Reddit MCP Server
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.0
+pytest-timeout>=2.1.0
+
+# Code Quality
+black>=23.0.0
+ruff>=0.1.0
+mypy>=1.5.0
+pre-commit>=3.3.0
+
+# Type stubs
+types-requests>=2.31.0
+types-python-dateutil>=2.8.0
+
+# Documentation
+pdoc3>=0.10.0
+mkdocs>=1.5.0
+mkdocs-material>=9.0.0
+
+# Development tools
+ipython>=8.0.0
+python-dotenv>=1.0.0
+
+# Performance profiling
+py-spy>=0.3.0
+memory-profiler>=0.60.0
