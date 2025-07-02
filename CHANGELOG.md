@@ -2,7 +2,7 @@
 
 All notable changes to the Reddit MCP Server project will be documented in this file.
 
-## [1.1.0] - 2024-07-02
+## [1.1.0] - 2025-01-02
 
 ### Fixed
 - Fixed "invalid literal for int() with base 10: '88.0'" error when Reddit API returns string floats
@@ -26,7 +26,7 @@ All notable changes to the Reddit MCP Server project will be documented in this 
 - Added uv package manager as recommended installation option
 - Updated setup documentation with uv configuration for Claude Desktop
 
-## [1.0.0] - 2024-07-01
+## [1.0.0] - 2025-01-01
 
 ### Added
 - Initial enhanced implementation with:
