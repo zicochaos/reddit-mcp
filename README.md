@@ -260,6 +260,74 @@ The server provides detailed error messages for common scenarios:
 - **404 Errors**: Graceful handling of non-existent subreddits or users
 - **403 Errors**: Clear messages for private/quarantined subreddits
 
+## LLM Usage
+
+This MCP server is designed to work seamlessly with Large Language Models like Claude, GPT-4, and other AI assistants that support the Model Context Protocol.
+
+### Quick Examples
+
+```
+User: "What's trending on Reddit right now?"
+User: "Show me the top posts from r/technology this week"
+User: "Find discussions about climate change"
+User: "What is r/python about?"
+```
+
+### Common Use Cases
+
+1. **Content Discovery**
+   - Browse trending topics across Reddit or specific subreddits
+   - Find the best posts about any topic
+   - Discover new communities
+
+2. **Research & Analysis**
+   - Analyze sentiment around products, events, or topics
+   - Compare discussions across different communities
+   - Track how conversations evolve over time
+
+3. **Community Insights**
+   - Get detailed information about subreddits
+   - Understand community rules and culture
+   - Find active discussions and expert opinions
+
+### Example LLM Interaction
+
+```
+User: "I want to learn about machine learning. What are the best Reddit resources?"
+
+LLM: "I'll help you find the best machine learning resources on Reddit. Let me search for relevant communities and posts."
+
+[Uses get_subreddit_info for "MachineLearning"]
+[Uses search_reddit for "beginner guide machine learning"]
+[Uses get_subreddit_feed for top posts from relevant subreddits]
+
+LLM: "Here are the best Reddit resources for learning machine learning:
+
+**Communities:**
+- r/MachineLearning (2.8M members) - Main hub for ML news and research
+- r/learnmachinelearning (890K members) - Focused on learning and beginners
+- r/MLQuestions (125K members) - Q&A for ML problems
+
+**Top Resources:**
+1. 'Complete Beginner's Guide to ML' - comprehensive guide with 5.6K upvotes
+2. 'Free ML Course Collection' - curated list of courses
+3. 'From Zero to ML Engineer Roadmap' - step-by-step learning path
+
+Would you like me to get more specific posts or explore any of these communities in detail?"
+```
+
+### Best Practices for LLMs
+
+1. **Start broad, then narrow down** - Use search or frontpage before diving into specific posts
+2. **Check community info first** - Understanding subreddit culture helps interpret content
+3. **Use appropriate sorting** - "top" for best content, "new" for latest, "controversial" for debates
+4. **Handle errors gracefully** - Some subreddits may be private or NSFW
+5. **Respect rate limits** - The server handles this automatically, but inform users of delays
+
+For more detailed examples and integration guides, see:
+- [LLM Usage Guide](docs/LLM_USAGE_GUIDE.md) - Comprehensive guide with prompts and examples
+- [Response Examples](docs/RESPONSE_EXAMPLES.md) - Actual response formats from each tool
+
 ## Development
 
 ### Project Structure
@@ -279,6 +347,8 @@ reddit-mcp/
 │   ├── SETUP_GUIDE.md      # Installation guide
 │   ├── TROUBLESHOOTING.md  # Common issues and solutions
 │   ├── USAGE_EXAMPLES.md   # Code examples
+│   ├── LLM_USAGE_GUIDE.md  # LLM integration guide
+│   ├── RESPONSE_EXAMPLES.md # Response format examples
 │   └── CONTRIBUTING.md     # Contribution guidelines
 ├── CHANGELOG.md            # Version history
 ├── LICENSE                 # MIT License
@@ -295,6 +365,6 @@ MIT License - see LICENSE file for details
 
 ## Repository
 
-- GitHub: [https://github.com/YOUR_USERNAME/reddit-mcp](https://github.com/YOUR_USERNAME/reddit-mcp)
-- Issues: [https://github.com/YOUR_USERNAME/reddit-mcp/issues](https://github.com/YOUR_USERNAME/reddit-mcp/issues)
-- Pull Requests: [https://github.com/YOUR_USERNAME/reddit-mcp/pulls](https://github.com/YOUR_USERNAME/reddit-mcp/pulls)
+- GitHub: [https://github.com/zicochaos/reddit-mcp](https://github.com/zicochaos/reddit-mcp)
+- Issues: [https://github.com/zicochaos/reddit-mcp/issues](https://github.com/zicochaos/reddit-mcp/issues)
+- Pull Requests: [https://github.com/zicochaos/reddit-mcp/pulls](https://github.com/zicochaos/reddit-mcp/pulls)
