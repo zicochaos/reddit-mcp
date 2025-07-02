@@ -139,3 +139,4 @@ config.json
 test_*.py
 .claude/
 .serena/
+CLAUDE.md
