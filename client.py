@@ -169,15 +169,20 @@ class RedditClient:
     
     async def get_subreddit(
         self,
-        subreddit: str,
+        subreddit: Optional[str],
         sort: str = "hot",
         time_filter: Optional[str] = None,
         limit: int = 25,
         after: Optional[str] = None,
         before: Optional[str] = None
     ) -> Dict[str, Any]:
-        """Get subreddit posts."""
-        path = f"/r/{subreddit}/{sort}"
+        """Get subreddit posts or frontpage if subreddit is None."""
+        if subreddit:
+            path = f"/r/{subreddit}/{sort}"
+        else:
+            # Frontpage
+            path = f"/{sort}"
+        
         params = {"limit": limit}
         
         if time_filter and sort in ["top", "controversial"]:
@@ -188,6 +193,11 @@ class RedditClient:
             params["before"] = before
         
         return await self.get(path, params=params)
+    
+    async def get_subreddit_info(self, subreddit: str) -> Dict[str, Any]:
+        """Get subreddit information from about.json."""
+        path = f"/r/{subreddit}/about"
+        return await self.get(path)
     
     async def get_user(
         self,

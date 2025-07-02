@@ -2,6 +2,23 @@
 
 All notable changes to the Reddit MCP Server project will be documented in this file.
 
+## [1.2.0] - 2025-07-02
+
+### Added
+- Frontpage support in `get_subreddit_feed` - leave subreddit parameter empty to get Reddit frontpage
+- New `get_subreddit_info` tool to get detailed subreddit metadata including:
+  - Description, subscriber count, active users
+  - Creation date, subreddit type, over18 status
+  - Banner, icon, and header images
+- Enhanced `get_post_comments` to include full post details in response:
+  - Complete post metadata, stats, and content
+  - Author information with IDs
+  - All post properties like flair, domain, thumbnail
+
+### Changed
+- Updated `get_subreddit_feed` to accept optional subreddit parameter
+- Improved `get_post_comments` response structure with detailed post information
+
 ## [1.1.0] - 2025-07-02
 
 ### Fixed

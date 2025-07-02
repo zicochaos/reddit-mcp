@@ -8,6 +8,7 @@ caching, rate limiting, and advanced features.
 import json
 import asyncio
 import logging
+from datetime import datetime
 from typing import Any, Sequence, Optional, List, Dict
 
 from mcp.server import Server
@@ -22,7 +23,7 @@ from mcp.types import (
 import mcp.server.stdio
 
 from config import config
-from models import Post, Comment, SortType, TimeFilter, ContentType
+from models import Post, Comment, SubredditInfo, SortType, TimeFilter, ContentType
 from client import RedditClient, RedditAPIError, RedditNotFoundError, RedditForbiddenError
 from cache import Cache, CacheDecorator
 from rate_limiter import RateLimiter
@@ -57,13 +58,13 @@ async def handle_list_tools() -> List[Tool]:
     return [
         Tool(
             name="get_subreddit_feed",
-            description="Get posts from a subreddit with advanced filtering options including sorting, time ranges, and pagination.",
+            description="Get posts from a subreddit or Reddit frontpage with advanced filtering options including sorting, time ranges, and pagination.",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "subreddit": {
                         "type": "string",
-                        "description": "The subreddit name (without r/ prefix)"
+                        "description": "The subreddit name (without r/ prefix). Leave empty for frontpage"
                     },
                     "sort": {
                         "type": "string",
@@ -88,7 +89,7 @@ async def handle_list_tools() -> List[Tool]:
                         "description": "Pagination cursor for next page"
                     }
                 },
-                "required": ["subreddit"]
+                "required": []
             }
         ),
         Tool(
@@ -168,7 +169,7 @@ async def handle_list_tools() -> List[Tool]:
         ),
         Tool(
             name="get_post_comments",
-            description="Get comments for a specific Reddit post with nested replies.",
+            description="Get detailed post content and comments for a specific Reddit post with nested replies.",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -199,6 +200,20 @@ async def handle_list_tools() -> List[Tool]:
                 },
                 "required": ["post_id"]
             }
+        ),
+        Tool(
+            name="get_subreddit_info",
+            description="Get detailed information about a subreddit including description, subscriber count, and other metadata.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "subreddit": {
+                        "type": "string",
+                        "description": "The subreddit name (without r/ prefix)"
+                    }
+                },
+                "required": ["subreddit"]
+            }
         )
     ]
 
@@ -218,6 +233,8 @@ async def handle_call_tool(name: str, arguments: Dict[str, Any] | None) -> List[
             return await search_reddit(**arguments)
         elif name == "get_post_comments":
             return await get_post_comments(**arguments)
+        elif name == "get_subreddit_info":
+            return await get_subreddit_info(**arguments)
         else:
             raise ValueError(f"Unknown tool: {name}")
     except Exception as e:
@@ -227,16 +244,17 @@ async def handle_call_tool(name: str, arguments: Dict[str, Any] | None) -> List[
 
 @CacheDecorator(cache, ttl=config.cache.ttl, key_prefix="subreddit:")
 async def get_subreddit_feed(
-    subreddit: str,
+    subreddit: Optional[str] = None,
     sort: str = "hot",
     time_filter: Optional[str] = None,
     limit: int = 25,
     after: Optional[str] = None
 ) -> List[TextContent]:
-    """Get posts from a subreddit with caching."""
+    """Get posts from a subreddit or frontpage with caching."""
     try:
-        # Validate input
-        subreddit = validate_subreddit_name(subreddit)
+        # Validate input if subreddit provided
+        if subreddit:
+            subreddit = validate_subreddit_name(subreddit)
         
         async with RedditClient(config.request, rate_limiter, config.reddit.base_url) as client:
             # Get subreddit data
@@ -254,7 +272,7 @@ async def get_subreddit_feed(
             
             # Build response
             result = {
-                "subreddit": subreddit,
+                "subreddit": subreddit if subreddit else "frontpage",
                 "sort": sort,
                 "time_filter": time_filter,
                 "post_count": len(posts),
@@ -266,7 +284,8 @@ async def get_subreddit_feed(
             }
             
             # Format response
-            summary = f"Retrieved {len(posts)} posts from r/{subreddit} (sorted by {sort}"
+            location = f"r/{subreddit}" if subreddit else "Reddit frontpage"
+            summary = f"Retrieved {len(posts)} posts from {location} (sorted by {sort}"
             if time_filter:
                 summary += f", {time_filter}"
             summary += ")"
@@ -277,9 +296,11 @@ async def get_subreddit_feed(
             )]
             
     except RedditNotFoundError:
-        return [TextContent(type="text", text=f"Error: Subreddit r/{subreddit} not found")]
+        sub_name = f"r/{subreddit}" if subreddit else "frontpage"
+        return [TextContent(type="text", text=f"Error: {sub_name} not found")]
     except RedditForbiddenError:
-        return [TextContent(type="text", text=f"Error: Access to r/{subreddit} is forbidden (private/quarantined)")]
+        sub_name = f"r/{subreddit}" if subreddit else "frontpage"
+        return [TextContent(type="text", text=f"Error: Access to {sub_name} is forbidden")]
     except ValueError as e:
         return [TextContent(type="text", text=f"Error: {str(e)}")]
     except Exception as e:
@@ -461,11 +482,41 @@ async def get_post_comments(
             
             if post_info:
                 result["post"] = {
+                    "id": post_info.id,
                     "title": post_info.title,
-                    "author": post_info.author.username,
-                    "subreddit": post_info.subreddit.name,
-                    "score": post_info.stats.score,
-                    "url": post_info.link
+                    "description": post_info.description,
+                    "author": {
+                        "username": post_info.author.username,
+                        "id": post_info.author.id
+                    },
+                    "subreddit": {
+                        "name": post_info.subreddit.name,
+                        "id": post_info.subreddit.id
+                    },
+                    "stats": {
+                        "score": post_info.stats.score,
+                        "upvotes": post_info.stats.upvotes,
+                        "downvotes": post_info.stats.downvotes,
+                        "upvote_ratio": post_info.stats.upvote_ratio,
+                        "comments": post_info.stats.comments,
+                        "awards": post_info.stats.awards
+                    },
+                    "metadata": {
+                        "created_utc": post_info.metadata.created_utc,
+                        "created_datetime": post_info.metadata.created_datetime.isoformat(),
+                        "edited": post_info.metadata.edited,
+                        "is_video": post_info.metadata.is_video,
+                        "is_self": post_info.metadata.is_self,
+                        "over_18": post_info.metadata.over_18,
+                        "spoiler": post_info.metadata.spoiler,
+                        "stickied": post_info.metadata.stickied,
+                        "locked": post_info.metadata.locked,
+                        "archived": post_info.metadata.archived
+                    },
+                    "url": post_info.link,
+                    "domain": post_info.domain,
+                    "flair_text": post_info.flair_text,
+                    "thumbnail": post_info.thumbnail
                 }
             
             result["comments"] = [
@@ -490,6 +541,70 @@ async def get_post_comments(
     except Exception as e:
         logger.error(f"Error getting post comments: {e}", exc_info=True)
         return [TextContent(type="text", text=f"Error: Failed to retrieve comments: {str(e)}")]
+
+
+@CacheDecorator(cache, ttl=config.cache.ttl, key_prefix="subreddit_info:")
+async def get_subreddit_info(subreddit: str) -> List[TextContent]:
+    """Get detailed information about a subreddit."""
+    try:
+        # Validate input
+        subreddit = validate_subreddit_name(subreddit)
+        
+        async with RedditClient(config.request, rate_limiter, config.reddit.base_url) as client:
+            # Get subreddit info
+            data = await client.get_subreddit_info(subreddit)
+            
+            # Parse the response
+            if not data or "data" not in data:
+                raise RedditAPIError("Invalid response from Reddit API")
+            
+            info_data = data["data"]
+            subreddit_info = SubredditInfo.from_reddit_data(info_data)
+            
+            # Build response
+            result = {
+                "name": subreddit_info.name,
+                "display_name": subreddit_info.display_name,
+                "title": subreddit_info.title,
+                "description": subreddit_info.description,
+                "public_description": subreddit_info.public_description,
+                "subscribers": subreddit_info.subscribers,
+                "active_users": subreddit_info.active_user_count,
+                "created_utc": subreddit_info.created_utc,
+                "created_date": datetime.fromtimestamp(subreddit_info.created_utc).isoformat(),
+                "over18": subreddit_info.over18,
+                "type": subreddit_info.subreddit_type,
+                "url": subreddit_info.url,
+                "icons": {
+                    "banner": subreddit_info.banner_img,
+                    "icon": subreddit_info.icon_img,
+                    "header": subreddit_info.header_img,
+                    "community_icon": subreddit_info.community_icon
+                }
+            }
+            
+            # Format response
+            summary = f"Information for r/{subreddit_info.display_name}"
+            if subreddit_info.subscribers:
+                summary += f" ({format_number(subreddit_info.subscribers)} subscribers"
+                if subreddit_info.active_user_count:
+                    summary += f", {format_number(subreddit_info.active_user_count)} active"
+                summary += ")"
+            
+            return [TextContent(
+                type="text",
+                text=f"{summary}\n\n{json.dumps(result, indent=2)}"
+            )]
+            
+    except RedditNotFoundError:
+        return [TextContent(type="text", text=f"Error: Subreddit r/{subreddit} not found")]
+    except RedditForbiddenError:
+        return [TextContent(type="text", text=f"Error: Access to r/{subreddit} is forbidden")]
+    except ValueError as e:
+        return [TextContent(type="text", text=f"Error: {str(e)}")]
+    except Exception as e:
+        logger.error(f"Error getting subreddit info: {e}", exc_info=True)
+        return [TextContent(type="text", text=f"Error: Failed to retrieve subreddit info: {str(e)}")]
 
 
 async def cleanup_task():

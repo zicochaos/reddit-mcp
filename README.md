@@ -117,11 +117,11 @@ For Claude Desktop integration, see the [Setup Guide](docs/SETUP_GUIDE.md) for c
 ### Available Tools
 
 #### 1. get_subreddit_feed
-Get posts from a subreddit with optional filtering.
+Get posts from a subreddit or Reddit frontpage with optional filtering.
 
 ```json
 {
-  "subreddit": "python",
+  "subreddit": "python",  // Optional: leave empty for frontpage
   "sort": "hot",
   "time_filter": "week",
   "limit": 25,
@@ -155,7 +155,7 @@ Search Reddit for posts.
 ```
 
 #### 4. get_post_comments
-Get comments for a specific post.
+Get detailed post content and comments for a specific post.
 
 ```json
 {
@@ -163,6 +163,15 @@ Get comments for a specific post.
   "sort": "best",
   "limit": 100,
   "depth": 2  // Optional: depth of nested replies to retrieve
+}
+```
+
+#### 5. get_subreddit_info
+Get detailed information about a subreddit.
+
+```json
+{
+  "subreddit": "python"
 }
 ```
 

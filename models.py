@@ -216,6 +216,47 @@ class Post:
 
 
 @dataclass
+class SubredditInfo:
+    """Subreddit information from about.json"""
+    name: str
+    display_name: str
+    title: str
+    description: str
+    subscribers: int
+    active_user_count: Optional[int]
+    created_utc: float
+    public_description: str
+    over18: bool
+    subreddit_type: str
+    url: str
+    banner_img: Optional[str]
+    icon_img: Optional[str]
+    header_img: Optional[str]
+    community_icon: Optional[str]
+    
+    @classmethod
+    def from_reddit_data(cls, data: Dict[str, Any]) -> "SubredditInfo":
+        """Create SubredditInfo from Reddit API response"""
+        return cls(
+            name=data.get("name", ""),
+            display_name=data.get("display_name", ""),
+            title=data.get("title", ""),
+            description=data.get("description", ""),
+            subscribers=safe_int(data.get("subscribers"), 0),
+            active_user_count=safe_int(data.get("active_user_count")),
+            created_utc=data.get("created_utc", 0),
+            public_description=data.get("public_description", ""),
+            over18=data.get("over18", False),
+            subreddit_type=data.get("subreddit_type", ""),
+            url=data.get("url", ""),
+            banner_img=data.get("banner_img"),
+            icon_img=data.get("icon_img"),
+            header_img=data.get("header_img"),
+            community_icon=data.get("community_icon")
+        )
+
+
+@dataclass
 class Comment:
     """Reddit comment model."""
     id: str
