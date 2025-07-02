@@ -132,7 +132,7 @@ Add the Reddit MCP server to your Claude Desktop configuration:
   "mcpServers": {
     "reddit": {
       "command": "python",
-      "args": ["/path/to/reddit-mcp/reddit_mcp_server_improved.py"],
+      "args": ["/path/to/reddit-mcp/reddit_mcp_server.py"],
       "env": {
         "REDDIT_CACHE_TTL": "300",
         "REDDIT_RATE_LIMIT_CALLS": "60"
@@ -160,7 +160,7 @@ Add the Reddit MCP server to your Claude Desktop configuration:
         "httpx>=0.25.0",
         "--with",
         "typing-extensions>=4.8.0",
-        "/path/to/reddit-mcp/reddit_mcp_server_improved.py"
+        "/path/to/reddit-mcp/reddit_mcp_server.py"
       ],
       "env": {
         "REDDIT_CACHE_TTL": "300",

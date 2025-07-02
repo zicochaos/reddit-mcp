@@ -24,7 +24,7 @@ A Model Context Protocol (MCP) server that provides Reddit feed functionality wi
            "httpx>=0.25.0",
            "--with",
            "typing-extensions>=4.8.0",
-           "/path/to/reddit-mcp/reddit_mcp_server_improved.py"
+           "/path/to/reddit-mcp/reddit_mcp_server.py"
          ]
        }
      }
@@ -76,7 +76,7 @@ git clone <repository-url>
 cd reddit-mcp
 
 # Run directly with uv (see Configuration section for Claude Desktop setup)
-uv run --no-project --with mcp>=0.1.0 --with httpx>=0.25.0 --with typing-extensions>=4.8.0 reddit_mcp_server_improved.py
+uv run --no-project --with mcp>=0.1.0 --with httpx>=0.25.0 --with typing-extensions>=4.8.0 reddit_mcp_server.py
 ```
 
 ## Configuration
@@ -106,10 +106,10 @@ REDDIT_USER_AGENT="YourApp/1.0"  # Custom user agent (optional)
 
 ```bash
 # Option 1: With Python (requires virtual environment)
-python reddit_mcp_server_improved.py
+python reddit_mcp_server.py
 
 # Option 2: With uv (no virtual environment needed)
-uv run --no-project --with mcp>=0.1.0 --with httpx>=0.25.0 --with typing-extensions>=4.8.0 reddit_mcp_server_improved.py
+uv run --no-project --with mcp>=0.1.0 --with httpx>=0.25.0 --with typing-extensions>=4.8.0 reddit_mcp_server.py
 ```
 
 For Claude Desktop integration, see the [Setup Guide](docs/SETUP_GUIDE.md) for configuration examples.
@@ -252,47 +252,29 @@ The server provides detailed error messages for common scenarios:
 ### Project Structure
 ```
 reddit-mcp/
-├── reddit_mcp_server.py         # Original basic implementation
-├── reddit_mcp_server_improved.py # Enhanced implementation with all features
-├── models.py                    # Data models with safe int parsing
-├── client.py                    # HTTP client with retry logic
-├── cache.py                     # LRU caching with TTL support
-├── rate_limiter.py              # Token bucket rate limiting
-├── config.py                    # Configuration management
-├── utils.py                     # Utility functions
-├── requirements.txt             # Production dependencies
-├── requirements-dev.txt         # Development dependencies
-├── tests/                       # Comprehensive test suite
-│   ├── unit/                   # Unit tests for all components
-│   └── integration/            # Integration tests
-└── README.md                   # This file
+├── reddit_mcp_server.py    # Main MCP server implementation
+├── models.py               # Data models with safe int parsing
+├── client.py               # HTTP client with retry logic
+├── cache.py                # LRU caching with TTL support
+├── rate_limiter.py         # Token bucket rate limiting
+├── config.py               # Configuration management
+├── utils.py                # Utility functions
+├── requirements.txt        # Python dependencies
+├── docs/                   # Documentation
+│   ├── API_REFERENCE.md    # Complete API documentation
+│   ├── CONFIGURATION.md    # Configuration guide
+│   ├── SETUP_GUIDE.md      # Installation guide
+│   ├── TROUBLESHOOTING.md  # Common issues and solutions
+│   ├── USAGE_EXAMPLES.md   # Code examples
+│   └── CONTRIBUTING.md     # Contribution guidelines
+├── CHANGELOG.md            # Version history
+├── LICENSE                 # MIT License
+└── README.md              # This file
 ```
-
-### Running Tests
-```bash
-# Run all tests
-pytest
-
-# Run with coverage
-pytest --cov=. --cov-report=html
-
-# Run specific test file
-pytest tests/unit/test_models.py
-```
-
-### Test Coverage
-The project includes comprehensive tests with >70% coverage:
-- Unit tests for all data models and utilities
-- Integration tests for client and server
-- String float parsing tests for Reddit API quirks
-- Mock Reddit API responses for consistent testing
 
 ### Contributing
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Submit a pull request
+
+See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for detailed contribution guidelines.
 
 ## License
 
